@@ -1,57 +1,41 @@
-import DeployButton from "../components/DeployButton";
-import AuthButton from "../components/AuthButton";
-import { createClient } from "@/utils/supabase/server";
-import ConnectSupabaseSteps from "@/components/ConnectSupabaseSteps";
-import SignUpUserSteps from "@/components/SignUpUserSteps";
-import Header from "@/components/Header";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { Sidebar } from "@/components/sidebar";
+import CreateTweet from "@/components/timeline-section/write-post";
+import Timeline from "@/components/timeline-section/timeline";
 
 export default async function Index() {
-  const cookieStore = cookies();
+  const supabase = createServerComponentClient({ cookies });
 
-  const canInitSupabaseClient = () => {
-    // This function is just for the interactive tutorial.
-    // Feel free to remove it once you have Supabase connected.
-    try {
-      createClient(cookieStore);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  const isSupabaseConnected = canInitSupabaseClient();
+  if (!session) {
+    redirect("/login");
+  }
 
   return (
-    <div className="flex-1 w-full flex flex-col gap-20 items-center">
-      <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-        <div className="w-full max-w-4xl flex justify-between items-center p-3 text-sm">
-          <DeployButton />
-          {isSupabaseConnected && <AuthButton />}
+    <div className="w-full grid grid-cols-3">
+      <div className="w-full flex">
+        <div className="w-1/2"></div>
+        <div className="w-1/2">
+          <Sidebar />
         </div>
-      </nav>
-
-      <div className="animate-in flex-1 flex flex-col gap-20 opacity-0 max-w-4xl px-3">
-        <Header />
-        <main className="flex-1 flex flex-col gap-6">
-          <h2 className="font-bold text-4xl mb-4">Next steps</h2>
-          {isSupabaseConnected ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
-        </main>
       </div>
-
-      <footer className="w-full border-t border-t-foreground/10 p-8 flex justify-center text-center text-xs">
-        <p>
-          Powered by{" "}
-          <a
-            href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-            target="_blank"
-            className="font-bold hover:underline"
-            rel="noreferrer"
-          >
-            Supabase
-          </a>
-        </p>
-      </footer>
+      <div className="w-full border-x border-slate-100  my-0">
+        <div className="mt-4 mx-4 border-b border-slate-100 border-1">
+         <CreateTweet />
+        </div>
+        <div className="mx-4 border-slate-100 border-1">
+          <Timeline />
+        </div>
+      </div>
+      <div>
+        
+      </div>
     </div>
   );
 }
