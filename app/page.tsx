@@ -3,10 +3,12 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/sidebar";
-import CreateTweet from "@/components/timeline-section/write-post";
-import Timeline from "@/components/timeline-section/timeline";
+import CreateTweet from "@/components/write-post";
+import Timeline from "@/components/timeline";
 import { fetchProfile } from "@/utils/supabase-server";
 import { fetchPost } from "@/utils/supabase-server";
+
+
 
 export default async function Index() {
   const supabase = createServerComponentClient({ cookies });
@@ -30,13 +32,12 @@ export default async function Index() {
         </div>
       </div>
       <div className="w-full border-x border-slate-100  my-0 h-max">
-      <div className="mt-4 mx-4 border-b border-slate-100 border-1">
+        <div className="mt-4 mx-4 border-b border-slate-100 border-1">
          <CreateTweet user={session.user}/>
         </div>
         <div className="mx-4 border-slate-100 border-1">
-          <Timeline posts={posts!}/>
+          <Timeline posts={posts!} session={session}/>
         </div>
-        
       </div>
       
     </div>

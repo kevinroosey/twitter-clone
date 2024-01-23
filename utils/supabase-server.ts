@@ -1,5 +1,4 @@
 "use server"
-import Post from "@/components/timeline-section/post";
 import { Database } from "@/types/supabase";
 import { User, createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
@@ -64,12 +63,54 @@ export async function upsertProfile(profile: Profile) {
   }
 }
 
-export async function fetchProfilePicture(id: string) {
+
+
+export async function LikePost(post_id:number, user:User){
   const supabase = createServerSupabaseClient();
   try {
-    const { data, error } = await supabase.storage.from('avatars').download(`${id}.png`)
+    const { data, error } = await supabase
+      .from('likes')
+      .insert({
+        user: user.id, 
+        created_at: ((new Date()).toISOString()),
+        post_liked: post_id,
+        id:(Math.floor(Math.random() * 10000000) + 1)
+      })
     return data;
   }catch (error) {
+    console.error("Error:", error);
+    return null;
+  }
+}
+
+export async function CheckIfUserLiked(post_id: number, user_id: string):Promise<boolean | null>{
+  const supabase = createServerSupabaseClient();
+  try {
+    const { data, error} = await supabase
+      .from('likes')
+      .select('*')
+      .eq('post_liked', post_id)
+      .eq('user', user_id)
+
+    return data!.length != 0;
+  } catch(error) {
+    console.error("Error:", error);
+    return null;
+  }
+}
+
+export async function DeleteLike(post_id: number, user_id: string){
+  const supabase = createServerSupabaseClient();
+  console.log(user_id)
+  try {
+    const { data, error} = await supabase
+      .from('likes')
+      .delete()
+      .eq('post_liked', post_id)
+      .eq('user', user_id)
+    console.log(error)
+    return data;
+  } catch(error) {
     console.error("Error:", error);
     return null;
   }
@@ -89,54 +130,8 @@ export async function fetchPost():Promise<Post[] | null> {
   }
 }
 
-export async function fetchRepost(user: User): Promise<Repost[] | null> {
-  const supabase = createServerSupabaseClient();
-  try {
-    const { data, error } = await supabase.from('reposts').select("*")
-    return data;
-  }catch (error) {
-    console.error("Error:", error);
-    return null;
-  }
-}
 
-export async function fetchComment(user: User): Promise<Comment[] | null> {
-  const supabase = createServerSupabaseClient();
-  try {
-    const { data, error } = await supabase.from('comments').select("*")
-    return data;
-  }catch (error) {
-    console.error("Error:", error);
-    return null;
-  }
-}
 
-export async function fetchLike(user: User): Promise<Like[] | null> {
-  const supabase = createServerSupabaseClient();
-  try {
-    const { data, error } = await supabase.from('likes').select("*")
-    return data;
-  }catch (error) {
-    console.error("Error:", error);
-    return null;
-  }
-}
-
-interface TimelineItems {
-  author: string | null;
-  content: string | null;
-  created_at: string;
-  id: number;
-  post_id: number | null;
-  reposter_id: number | null;
-  commenter_id: number | null;
-}
-
-export type TimelinePosts = {
-  post_object: TimelineItems
-  author: Profile;
-  profile_picture: string;
-}
 
 export async function getPostAuthor(author: string): Promise<Profile | null>{
   const supabase = createServerSupabaseClient();
@@ -148,24 +143,6 @@ export async function getPostAuthor(author: string): Promise<Profile | null>{
     console.error("Error:", error);
     return null;
   }
-}
-
-
-
-
-
-type UserActivity = Post | Repost | Comment | Like
-
-export async function fetchUserActivity(user: User){
-
-  const data:UserActivity[] = [];
-
-  const posts = await fetchPostByUser(user);
-  const reposts = await fetchRepostByUser(user);
-  const comments = await fetchCommentByUser(user)
-  const likes = await fetchLikeByUser(user);
-
-  return {posts, reposts, comments, likes}
 }
 
 export async function fetchPostByUser(user: User):Promise<Post[] | null> {

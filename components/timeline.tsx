@@ -1,4 +1,4 @@
-import { User, createClient } from '@supabase/supabase-js'
+import { Session, User, createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/supabase'
 import { cookies } from 'next/headers'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
@@ -26,18 +26,16 @@ export type TimelinePosts = {
 }
 
 
-export default async function Timeline({posts}: {posts: Post[]}) {
+export default async function Timeline({posts, session}: {posts: Post[], session:Session}) {
   const supabase = createServerComponentClient<Database>({
     cookies,
   })
-  
-  
   
   return (
     <div>
       {posts?.map((post: Post) => (
         <div className='border-b'>
-          <Post post={post}/>
+          <Post post={post} session={session}/>
         </div>
       ))}
     </div>

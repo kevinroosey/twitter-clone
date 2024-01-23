@@ -4,6 +4,7 @@ import { createServerSupabaseClient, getPostAuthor } from '@/utils/supabase-serv
 import Balancer from 'react-wrap-balancer'
 import TimelineAnalytics from './timeline-analytics'
 import Image from 'next/image'
+import { Session } from '@supabase/supabase-js'
 
 type Post = Database['public']['Tables']['posts']['Row']
 type Profile = Database['public']['Tables']['profiles']['Row']
@@ -37,7 +38,7 @@ function getFormattedDate(date:Date) {
 
 
 
-export default async function Post({post}: {post: Post}) {
+export default async function Post({post, session}: {post: Post, session:Session}) {
  
   const supabase = createServerSupabaseClient();
   const author = await getPostAuthor(post.author!)
@@ -66,7 +67,7 @@ export default async function Post({post}: {post: Post}) {
             <p className='text-xl'><Balancer>{post.content}</Balancer></p>
           </div>
           <div className='mx-4 mt-4'>
-            
+            <TimelineAnalytics post={post} session={session}/>
           </div>
         </div>
       </div>

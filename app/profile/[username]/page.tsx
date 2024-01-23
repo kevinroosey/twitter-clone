@@ -1,7 +1,7 @@
 import React from "react";
 import { Sidebar } from "@/components/sidebar"
-import CreateTweet from "@/components/timeline-section/write-post"
-import Timeline from "@/components/timeline-section/timeline"
+import CreateTweet from "@/components/write-post"
+import Timeline from "@/components/timeline"
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -9,8 +9,8 @@ import { Database } from "@/types/supabase";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import ProfileTimeline from "@/components/timeline-section/profile-timeline";
-import { fetchCommentByUser, fetchLikeByUser, fetchPostByUser, fetchRepostByUser, fetchUserActivity } from "@/utils/supabase-server";
+import ProfileTimeline from "@/components/profile-timeline";
+import { fetchCommentByUser, fetchLikeByUser, fetchPostByUser, fetchRepostByUser,  } from "@/utils/supabase-server";
 
 export default async function Page({ params }: { params: { username: string } }){
   const supabase = createServerComponentClient<Database>({ cookies });
@@ -22,7 +22,7 @@ export default async function Page({ params }: { params: { username: string } })
   const profile = await supabase.from('profiles').select("*").eq('username', params.username).single()
   const publicUrl = await supabase.storage.from('avatars').getPublicUrl(`${profile.data?.user}.jpg`)
 
-  const timelineData = await fetchUserActivity(session.user)
+  
   
   
   return (
@@ -70,14 +70,18 @@ export default async function Page({ params }: { params: { username: string } })
           
         
         </div>
-        <ProfileTimeline 
-          posts={timelineData.posts!} 
-          reposts={timelineData.reposts!} 
-          likes={timelineData.likes!} 
-          comments={timelineData.comments!}
-          profile={profile.data!}
-        />
-
+        {/*
+          this sucks. will replace this with a "timeline" component that works for both profile pages and home timelines.
+        
+        
+          <ProfileTimeline 
+            posts={timelineData.posts!} 
+            reposts={timelineData.reposts!} 
+            likes={timelineData.likes!} 
+            comments={timelineData.comments!}
+            profile={profile.data!}
+          />
+                  */ }
         
       </div>
     </div>

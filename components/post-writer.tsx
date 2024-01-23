@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from "react";
-import { Textarea } from "../ui/textarea"
+import { Textarea } from "./ui/textarea"
 import { User } from "@supabase/supabase-js";
 import { publishPost } from "@/utils/supabase-server";
 import Image from "next/image";

@@ -1,7 +1,7 @@
 
 
-import { Button } from "../ui/button";
-import { Textarea } from "../ui/textarea";
+import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
 import { useEffect, useState } from "react";
 import { getSession, publishPost } from "@/utils/supabase-server";
 import type { Database } from "@/types/supabase";
