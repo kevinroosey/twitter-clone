@@ -1,15 +1,15 @@
-import { Metadata } from "next"
-import Image from "next/image"
+import { Metadata } from "next";
+import Image from "next/image";
 
-import { Separator } from "@/components/ui/separator"
-import { SidebarNav } from "@/components/sidebar-nav"
-import { Button } from "@/components/ui/button"
-import { ChevronLeft } from "lucide-react"
-import Link from "next/link"
+import { Separator } from "@/components/ui/separator";
+import { SidebarNav } from "@/components/sidebar-nav";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
 export const metadata: Metadata = {
   title: "Forms",
   description: "Advanced form example using react-hook-form and Zod.",
-}
+};
 
 const sidebarNavItems = [
   {
@@ -20,19 +20,17 @@ const sidebarNavItems = [
     title: "Account",
     href: "/settings/account",
   },
-  
-]
+];
 
 interface SettingsLayoutProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
   return (
     <>
-      
       <div className="w-2/3 hidden space-y-6 p-10 pb-16 lg:block">
-        <Link  href={'/'}>
+        <Link href={"/"}>
           <Button variant="outline" size="icon">
             <ChevronLeft className="h-4 w-4" />
           </Button>
@@ -52,5 +50,5 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
         </div>
       </div>
     </>
-  )
+  );
 }

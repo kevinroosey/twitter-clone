@@ -1,7 +1,7 @@
-import { Separator } from "@/components/ui/separator"
+import { Separator } from "@/components/ui/separator";
 
-import ProfileForm from "./profile-form"
-import { getSession } from "@/utils/supabase-server"
+import ProfileForm from "./profile-form";
+import { getSession } from "@/utils/supabase-server";
 
 export default async function SettingsProfilePage() {
   const user = await getSession();
@@ -15,7 +15,7 @@ export default async function SettingsProfilePage() {
         </p>
       </div>
       <Separator />
-      <ProfileForm user={user?.user!}/>
+      <ProfileForm user={user?.user!} />
     </div>
-  )
+  );
 }

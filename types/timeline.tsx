@@ -1,5 +1,1 @@
-
-
-export type Timeline = {
-  
-}
+export type Timeline = {};

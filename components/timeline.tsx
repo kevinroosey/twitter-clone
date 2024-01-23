@@ -1,13 +1,13 @@
-import { Session, User, createClient } from '@supabase/supabase-js'
-import type { Database } from '@/types/supabase'
-import { cookies } from 'next/headers'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import Post from './post'
+import { Session, User, createClient } from "@supabase/supabase-js";
+import type { Database } from "@/types/supabase";
+import { cookies } from "next/headers";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import Post from "./post";
 
 export const revalidate = 0;
 
-type Post = Database['public']['Tables']['posts']['Row']
-type Profile = Database['public']['Tables']['profiles']['Row']
+type Post = Database["public"]["Tables"]["posts"]["Row"];
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 interface TimelineItems {
   author: string | null;
@@ -20,24 +20,29 @@ interface TimelineItems {
 }
 
 export type TimelinePosts = {
-  post_object: TimelineItems
+  post_object: TimelineItems;
   author: Profile;
   profile_picture: string;
-}
+};
 
-
-export default async function Timeline({posts, session}: {posts: Post[], session:Session}) {
+export default async function Timeline({
+  posts,
+  session,
+}: {
+  posts: Post[];
+  session: Session;
+}) {
   const supabase = createServerComponentClient<Database>({
     cookies,
-  })
-  
+  });
+
   return (
     <div>
       {posts?.map((post: Post) => (
-        <div className='border-b'>
-          <Post post={post} session={session}/>
+        <div className="border-b">
+          <Post post={post} session={session} />
         </div>
       ))}
     </div>
-  )
+  );
 }
